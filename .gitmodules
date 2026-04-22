@@ -1,3 +1,9 @@
 [submodule "modules/frontend"]
 	path = modules/frontend
 	url = https://github.com/Gavin-Allison/Project-Frontend.git
+[submodule "modules/image_composition"]
+	path = modules/image_composition
+	url = https://github.com/Gavin-Allison/Project-Image-Composition
+[submodule "modules/gateway"]
+	path = modules/gateway
+	url = https://github.com/Gavin-Allison/Project-Gateway
