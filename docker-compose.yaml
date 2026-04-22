@@ -1,0 +1,40 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # RabbitMQ port
+      - "15672:15672" # Management UI (check queue status here)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    build: ./modules/gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+
+  worker:
+    build: ./modules/image_composition
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - PYTHONUNBUFFERED=1
+    # If you need to scale this later:
+    # deploy:
+    #   replicas: 2
+
+  frontend:
+    build: ./modules/frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api-gateway
